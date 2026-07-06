@@ -88,41 +88,76 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
-          // Menú horizontal sin opciones
+          // Cinta de menú deslizable horizontalmente (Menu Ribbon)
           Container(
-            height: 60,
-            color: Colors.blue.shade100,
-            width: double.infinity,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  // Aquí irían las opciones del menú horizontal, por ahora está vacío o con placeholders deshabilitados
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text(
-                      'Menú Horizontal:',
-                      style: TextStyle(color: Colors.blue.shade800, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.chat),
-                    label: const Text('Asistente IA'),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/chatbot');
-                    },
-                  ),
-                  const SizedBox(width: 16),
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.person),
-                    label: const Text('Yo'),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/perfil', arguments: idpersona);
-                    },
-                  ),
-                  const SizedBox(width: 16),
-                ],
+            height: 76,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+              border: Border(
+                bottom: BorderSide(color: Colors.grey.shade200, width: 1),
               ),
+            ),
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              physics: const BouncingScrollPhysics(),
+              children: [
+                _buildMenuRibbonItem(
+                  context: context,
+                  label: 'Asistente IA',
+                  icon: Icons.chat_bubble_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF4F46E5), Color(0xFF6366F1)], // Indigo gradient
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/chatbot');
+                  },
+                ),
+                _buildMenuRibbonItem(
+                  context: context,
+                  label: 'Yo (Mi Perfil)',
+                  icon: Icons.person_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF0D9488), Color(0xFF14B8A6)], // Teal/cyan gradient
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/perfil', arguments: idpersona);
+                  },
+                ),
+                _buildMenuRibbonItem(
+                  context: context,
+                  label: 'ComUniTi',
+                  icon: Icons.storefront_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFEA580C), Color(0xFFF97316)], // Orange gradient
+                  ),
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Módulo ComUniTi (Próximamente)')),
+                    );
+                  },
+                ),
+                _buildMenuRibbonItem(
+                  context: context,
+                  label: 'Salud',
+                  icon: Icons.favorite_rounded,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFE11D48), Color(0xFFF43F5E)], // Rose/pink gradient
+                  ),
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Módulo Salud (Próximamente)')),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
           Expanded(
