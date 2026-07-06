@@ -4,6 +4,8 @@ import 'LoginPage.dart';
 import 'LoginPagex.dart';
 import 'RegistroPage.dart';
 import 'ChatbotScreen.dart';
+import 'PerfilUsuarioPage.dart';
+import 'api_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +48,10 @@ class MyApp extends StatelessWidget {
         '/registro': (context) => const RegistroPage(),
         '/home': (context) => const HomePage(),
         '/chatbot': (context) => const ChatbotScreen(),
+        '/perfil': (context) {
+          final idpersona = ModalRoute.of(context)?.settings.arguments as String?;
+          return YoWrapperPage(idpersona: idpersona ?? '');
+        },
       },
     );
   }
@@ -107,6 +113,14 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                   const SizedBox(width: 16),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.person),
+                    label: const Text('Yo'),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/perfil', arguments: idpersona);
+                    },
+                  ),
+                  const SizedBox(width: 16),
                 ],
               ),
             ),
@@ -122,6 +136,68 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class YoWrapperPage extends StatefulWidget {
+  final String idpersona;
+
+  const YoWrapperPage({super.key, required this.idpersona});
+
+  @override
+  State<YoWrapperPage> createState() => _YoWrapperPageState();
+}
+
+class _YoWrapperPageState extends State<YoWrapperPage> {
+  Persona? _persona;
+  List<Perfil> _perfiles = [];
+  Perfil? _perfilSeleccionado;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    try {
+      final persona = await ApiService.fetchPersonaInfo(widget.idpersona);
+      final perfiles = await ApiService.fetchPerfiles(persona.idusuario);
+      
+      setState(() {
+        _persona = persona;
+        _perfiles = perfiles;
+        if (_perfiles.isNotEmpty) {
+          _perfilSeleccionado = _perfiles.first;
+        }
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Mi Perfil (Yo)'),
+        backgroundColor: Colors.blueAccent,
+      ),
+      body: _isLoading 
+        ? const Center(child: CircularProgressIndicator())
+        : _persona == null 
+          ? const Center(child: Text('No se pudo cargar la información.'))
+          : PerfilUsuarioPage(
+              persona: _persona,
+              perfiles: _perfiles,
+              perfil: _perfilSeleccionado,
+              onPerfilChanged: (p) => setState(() => _perfilSeleccionado = p),
+            ),
     );
   }
 }

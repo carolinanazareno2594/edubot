@@ -127,4 +127,118 @@ class ApiService {
       return 'Error: No se pudo conectar con el agente. Detalle: $e';
     }
   }
+
+  static Future<Persona> fetchPersonaInfo(String idpersona) async {
+    final url = Uri.parse('https://educaysoft.org/sica/index.php/persona/persona_flutter');
+    final response = await http.post(
+      url,
+      body: {
+        'idpersona': idpersona,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      try {
+        final decoded = json.decode(response.body);
+        final List<dynamic>? dataList = decoded['data'];
+
+        if (dataList != null && dataList.isNotEmpty) {
+          final Map<String, dynamic> personaMap = Map<String, dynamic>.from(dataList.first);
+          return Persona.fromJson(personaMap);
+        } else {
+          throw Exception('Respuesta de la API de Persona vacía o sin clave "data".');
+        }
+      } catch (e) {
+        throw Exception('Error al procesar la información de la persona. Detalle: $e');
+      }
+    } else {
+      throw Exception('Error al conectar con el servidor (${response.statusCode})');
+    }
+  }
+
+  static Future<List<Perfil>> fetchPerfiles(String idusuario) async {
+    final url = Uri.parse('https://educaysoft.org/sica/index.php/perfil/perfil_personaflutter');
+    final response = await http.post(
+      url,
+      body: {
+        'idusuario': idusuario,
+      },
+    );
+    if (response.statusCode == 200) {
+      try {
+        final decoded = json.decode(response.body);
+        if (decoded is Map && decoded.containsKey('data')) {
+          final data = decoded['data'];
+          if (data is List) {
+            return data.map((e) => Perfil.fromJson(e)).toList();
+          }
+        }
+        return [];
+      } catch (e) {
+        return [];
+      }
+    } else {
+      return [];
+    }
+  }
+
+  static Future<List<Portafolio>> fetchPortafolio(String idpersona) async {
+    final url = Uri.parse('https://educaysoft.org/sica/index.php/portafolio/portafolio_flutter?idpersona=$idpersona');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      final List data = jsonData['data'];
+      return data.map((e) => Portafolio.fromJson(e)).toList();
+    } else {
+      throw Exception('Error al cargar portafolio');
+    }
+  }
+}
+
+class Persona {                                                                                               
+  final String idpersona;
+  final String lapersona;
+  final String cedula;
+  final String idusuario;
+  
+  Persona({required this.idpersona, required this.cedula, required this.lapersona, required this.idusuario});
+  
+  factory Persona.fromJson(Map<String, dynamic> json) {
+    return Persona(
+      idpersona: json['idpersona'].toString(),
+      cedula: json['cedula'] ?? '',
+      lapersona: json['lapersona'] ?? '',
+      idusuario: json['idusuario']?.toString() ?? '',
+    );
+  }
+}
+
+class Perfil {
+  final String idperfil;
+  final String nombre;
+
+  Perfil({required this.idperfil, required this.nombre});
+
+  factory Perfil.fromJson(Map<String, dynamic> json) {
+    return Perfil(
+      idperfil: json['idperfil']?.toString() ?? '',
+      nombre: json['nombreperfil'] ?? json['perfil'] ?? json['nombre'] ?? 'Invitado',
+    );
+  }
+}
+
+class Portafolio {                                                                                               
+  final String idportafolio;
+  final String elperiodo;
+  final String lapersona;
+  
+  Portafolio({required this.elperiodo, required this.idportafolio, required this.lapersona});
+  
+  factory Portafolio.fromJson(Map<String, dynamic> json) {
+    return Portafolio(
+      idportafolio: json['idportafolio'].toString(),
+      elperiodo: json['elperiodo'],
+      lapersona: json['lapersona'],
+    );
+  }
 }
