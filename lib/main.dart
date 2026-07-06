@@ -6,6 +6,7 @@ import 'RegistroPage.dart';
 import 'ChatbotScreen.dart';
 import 'PerfilUsuarioPage.dart';
 import 'api_service.dart';
+import 'EdubotDrawer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -86,140 +87,12 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: Column(
-        children: [
-          // Cinta de menú deslizable horizontalmente (Menu Ribbon)
-          Container(
-            height: 76,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-              border: Border(
-                bottom: BorderSide(color: Colors.grey.shade200, width: 1),
-              ),
-            ),
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              physics: const BouncingScrollPhysics(),
-              children: [
-                _buildMenuRibbonItem(
-                  context: context,
-                  label: 'Asistente IA',
-                  icon: Icons.chat_bubble_rounded,
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF4F46E5), Color(0xFF6366F1)], // Indigo gradient
-                  ),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/chatbot');
-                  },
-                ),
-                _buildMenuRibbonItem(
-                  context: context,
-                  label: 'Yo (Mi Perfil)',
-                  icon: Icons.person_rounded,
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF0D9488), Color(0xFF14B8A6)], // Teal/cyan gradient
-                  ),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/perfil', arguments: idpersona);
-                  },
-                ),
-                _buildMenuRibbonItem(
-                  context: context,
-                  label: 'ComUniTi',
-                  icon: Icons.storefront_rounded,
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFEA580C), Color(0xFFF97316)], // Orange gradient
-                  ),
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Módulo ComUniTi (Próximamente)')),
-                    );
-                  },
-                ),
-                _buildMenuRibbonItem(
-                  context: context,
-                  label: 'Salud',
-                  icon: Icons.favorite_rounded,
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFE11D48), Color(0xFFF43F5E)], // Rose/pink gradient
-                  ),
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Módulo Salud (Próximamente)')),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Center(
-              child: Text(
-                'Bienvenido al nuevo proyecto Edubot.\nID Persona: ${idpersona ?? "Desconocido"}',
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 18),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMenuRibbonItem({
-    required BuildContext context,
-    required String label,
-    required IconData icon,
-    required Gradient gradient,
-    required VoidCallback onTap,
-  }) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: gradient,
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: [
-            BoxShadow(
-              color: gradient.colors.first.withOpacity(0.3),
-              blurRadius: 6,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(30),
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(icon, color: Colors.white, size: 20),
-                  const SizedBox(width: 8),
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+      drawer: EdubotDrawer(idpersona: idpersona ?? ''),
+      body: Center(
+        child: Text(
+          'Bienvenido al nuevo proyecto Edubot.\nID Persona: ${idpersona ?? "Desconocido"}',
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 18),
         ),
       ),
     );
