@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'LoginPage.dart';
 import 'LoginPagex.dart';
 import 'RegistroPage.dart';
+import 'ChatbotScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         '/loginx': (context) => const LoginPagex(),
         '/registro': (context) => const RegistroPage(),
         '/home': (context) => const HomePage(),
+        '/chatbot': (context) => const ChatbotScreen(),
       },
     );
   }
@@ -93,10 +95,18 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
-                      'Menú Horizontal (Sin opciones habilitadas)',
+                      'Menú Horizontal:',
                       style: TextStyle(color: Colors.blue.shade800, fontWeight: FontWeight.bold),
                     ),
                   ),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.chat),
+                    label: const Text('Asistente IA'),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/chatbot');
+                    },
+                  ),
+                  const SizedBox(width: 16),
                 ],
               ),
             ),

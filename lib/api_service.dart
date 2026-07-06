@@ -109,4 +109,22 @@ class ApiService {
       throw Exception('Error al registrar usuario');
     }
   }
+
+  static Future<String> chatWithAgenteIa(String promptUsuario) async {
+    final url = Uri.parse('https://educaysoft.org/sica/index.php/Agenteia/chat_api');
+    try {
+      final response = await http.post(
+        url,
+        body: {'prompt_usuario': promptUsuario},
+      );
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        return decoded['respuesta'] ?? 'Error: Sin respuesta del agente';
+      } else {
+        return 'Error en la conexión con el servidor (${response.statusCode})';
+      }
+    } catch (e) {
+      return 'Error: No se pudo conectar con el agente. Detalle: $e';
+    }
+  }
 }
