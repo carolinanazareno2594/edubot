@@ -8,7 +8,7 @@ void main() {
     await tester.pumpWidget(const MyApp(initialRoute: '/loginx'));
 
     // Verify that our login page is loaded.
-    expect(find.text('SICA-ESTUDIANTE'), findsOneWidget);
+    expect(find.text('edubot-UTLVTE'), findsOneWidget);
     expect(find.text('Iniciar sesión'), findsWidgets);
   });
 }

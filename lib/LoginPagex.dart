@@ -221,7 +221,7 @@ class _LoginPagexState extends State<LoginPagex> {
             child: Column(
               children: [
                 const Text(
-                  'SICA-ESTUDIANTE',
+                  'edubot-UTLVTE',
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -230,7 +230,7 @@ class _LoginPagexState extends State<LoginPagex> {
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'SISTEMA INTEGRADO DE CONTROL ACADÉMICO',
+                  'ChatBot Educativo UTLVTE',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 18,
@@ -240,7 +240,7 @@ class _LoginPagexState extends State<LoginPagex> {
                 const SizedBox(height: 24),
 
                 Image.network(
-                  'https://educaysoft.org/sica/images/logoeysutlvt.png',
+                  'https://educaysoft.org/sica/images/logoedubot.png',
                   height: 120,
                   errorBuilder: (context, error, stackTrace) =>
                       const Icon(Icons.error, size: 120, color: Colors.red),

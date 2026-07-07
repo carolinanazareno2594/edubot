@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'api_service.dart';
+import 'EdubotDrawer.dart';
 
 class ChatMessage {
   final String text;
@@ -19,6 +21,31 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   final TextEditingController _controller = TextEditingController();
   final List<ChatMessage> _messages = [];
   bool _isLoading = false;
+  String _idpersona = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadIdPersona();
+  }
+
+  Future<void> _loadIdPersona() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() {
+        _idpersona = prefs.getString('idpersona') ?? '';
+      });
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as String?;
+    if (args != null && args.isNotEmpty) {
+      _idpersona = args;
+    }
+  }
 
   void _sendMessage() async {
     final text = _controller.text.trim();
@@ -46,6 +73,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
         backgroundColor: const Color(0xFF2D3142),
         foregroundColor: Colors.white,
       ),
+      drawer: EdubotDrawer(idpersona: _idpersona),
       body: Stack(
         children: [
           // Papel tapiz de fondo como marca de agua
@@ -56,7 +84,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: Image.network(
-                    'https://educaysoft.org/sica/images/logoeysutlvt.png',
+                    'https://educaysoft.org/sica/images/logoedubot.png',
                     fit: BoxFit.contain,
                     errorBuilder: (context, error, stackTrace) =>
                         const SizedBox.shrink(),

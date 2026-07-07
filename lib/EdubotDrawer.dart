@@ -60,12 +60,25 @@ class EdubotDrawer extends StatelessWidget {
               padding: EdgeInsets.zero,
               children: [
                 _buildDrawerItem(
+                  icon: Icons.home_rounded,
+                  label: 'Inicio',
+                  iconColor: Colors.blueAccent,
+                  onTap: () {
+                    Navigator.pop(context); // Close Drawer
+                    if (ModalRoute.of(context)?.settings.name != '/home') {
+                      Navigator.pushNamed(context, '/home', arguments: idpersona);
+                    }
+                  },
+                ),
+                _buildDrawerItem(
                   icon: Icons.chat_bubble_rounded,
                   label: 'Asistente IA',
                   iconColor: const Color(0xFF4F46E5),
                   onTap: () {
                     Navigator.pop(context); // Close Drawer
-                    Navigator.pushNamed(context, '/chatbot');
+                    if (ModalRoute.of(context)?.settings.name != '/chatbot') {
+                      Navigator.pushNamed(context, '/chatbot', arguments: idpersona);
+                    }
                   },
                 ),
                 _buildDrawerItem(
@@ -74,30 +87,9 @@ class EdubotDrawer extends StatelessWidget {
                   iconColor: const Color(0xFF0D9488),
                   onTap: () {
                     Navigator.pop(context); // Close Drawer
-                    Navigator.pushNamed(context, '/perfil', arguments: idpersona);
-                  },
-                ),
-                const Divider(),
-                _buildDrawerItem(
-                  icon: Icons.storefront_rounded,
-                  label: 'ComUniTi (Marketplace)',
-                  iconColor: const Color(0xFFEA580C),
-                  onTap: () {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Módulo ComUniTi (Próximamente)')),
-                    );
-                  },
-                ),
-                _buildDrawerItem(
-                  icon: Icons.favorite_rounded,
-                  label: 'Salud',
-                  iconColor: const Color(0xFFE11D48),
-                  onTap: () {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Módulo Salud (Próximamente)')),
-                    );
+                    if (ModalRoute.of(context)?.settings.name != '/perfil') {
+                      Navigator.pushNamed(context, '/perfil', arguments: idpersona);
+                    }
                   },
                 ),
               ],

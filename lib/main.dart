@@ -76,6 +76,13 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.blueAccent,
         actions: [
           IconButton(
+            icon: const Icon(Icons.chat_bubble_rounded),
+            tooltip: 'Asistente IA',
+            onPressed: () {
+              Navigator.pushNamed(context, '/chatbot', arguments: idpersona ?? '');
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
               final prefs = await SharedPreferences.getInstance();
@@ -145,7 +152,17 @@ class _YoWrapperPageState extends State<YoWrapperPage> {
       appBar: AppBar(
         title: const Text('Mi Perfil (Yo)'),
         backgroundColor: Colors.blueAccent,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.chat_bubble_rounded),
+            tooltip: 'Asistente IA',
+            onPressed: () {
+              Navigator.pushNamed(context, '/chatbot', arguments: widget.idpersona);
+            },
+          ),
+        ],
       ),
+      drawer: EdubotDrawer(idpersona: widget.idpersona),
       body: _isLoading 
         ? const Center(child: CircularProgressIndicator())
         : _persona == null 
