@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'api_service.dart';
 import 'EdubotDrawer.dart';
 
@@ -22,6 +23,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   final List<ChatMessage> _messages = [];
   bool _isLoading = false;
   String _idpersona = '';
+  final stt.SpeechToText _speechToText = stt.SpeechToText();
+  bool _isListening = false;
 
   @override
   void initState() {
@@ -47,8 +50,47 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     }
   }
 
+  void _listen() async {
+    if (!_isListening) {
+      bool available = await _speechToText.initialize(
+        onStatus: (status) {
+          if (status == 'done' || status == 'notListening') {
+            if (mounted) {
+              setState(() => _isListening = false);
+            }
+          }
+        },
+        onError: (errorNotification) {
+          if (mounted) {
+            setState(() => _isListening = false);
+          }
+        },
+      );
+      if (available) {
+        setState(() => _isListening = true);
+        _speechToText.listen(
+          onResult: (val) {
+            if (mounted) {
+              setState(() {
+                _controller.text = val.recognizedWords;
+              });
+            }
+          },
+        );
+      }
+    } else {
+      setState(() => _isListening = false);
+      _speechToText.stop();
+    }
+  }
+
   void _sendMessage() async {
     final text = _controller.text.trim();
+    
+    if (_isListening) {
+      _speechToText.stop();
+      setState(() => _isListening = false);
+    }
     if (text.isEmpty) return;
 
     setState(() {
@@ -158,6 +200,14 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         ),
                         onSubmitted: (_) => _sendMessage(),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    CircleAvatar(
+                      backgroundColor: _isListening ? Colors.red[600] : Colors.blue[600],
+                      child: IconButton(
+                        icon: Icon(_isListening ? Icons.mic : Icons.mic_none, color: Colors.white),
+                        onPressed: _listen,
                       ),
                     ),
                     const SizedBox(width: 8),
